@@ -366,7 +366,7 @@ zoomSlider.addEventListener("input", function () {
   const val = (this.value - this.min) / (this.max - this.min) * 100;
   this.style.background = `linear-gradient(to right, #d42f2f ${val}%, #361616 ${val}%)`;
 });
-/*
+
 let ratio = window.innerWidth / window.innerHeight
 
 if (ratio <= 1) {
@@ -394,4 +394,3 @@ function checkRatio() {
 window.addEventListener("load", checkRatio)
 window.addEventListener("resize", checkRatio)
 window.addEventListener('orientationchange', checkRatio)
-*/

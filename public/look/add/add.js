@@ -18,7 +18,7 @@ const input = document.getElementById("upload");
 if (localStorage.getItem('imgs') === null) {
     localStorage.setItem('imgs', 0)
 }
-/*
+
 let ratio = window.innerWidth / window.innerHeight
 
 if (ratio <= 1) {
@@ -44,7 +44,7 @@ function checkRatio() {
 window.addEventListener("load", checkRatio)
 window.addEventListener("resize", checkRatio)
 window.addEventListener('orientationchange', checkRatio)
-*/
+
 x1.addEventListener('click', function () {
     pop1.style.opacity = "0"
     backPop.style.opacity = "0"

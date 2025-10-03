@@ -10,7 +10,7 @@ const warn = document.getElementById("warn")
 if (localStorage.getItem('imgs') === null) {
     localStorage.setItem('imgs', 0)
 }
-/*
+
 let ratio = window.innerWidth / window.innerHeight
 
 if (ratio <= 1) {
@@ -38,7 +38,7 @@ function checkRatio() {
 window.addEventListener("load", checkRatio)
 window.addEventListener("resize", checkRatio)
 window.addEventListener('orientationchange', checkRatio)
-*/
+
 setTimeout(function() {
     logo1.style.width = '20%'
     btns1.style.marginTop = '100px'
