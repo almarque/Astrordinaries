@@ -1,0 +1,89 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Iceland&display=swap');
+
+* {
+    font-family: "Iceland";
+    transition: 0.5s;
+    font-weight: 400;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(0, 0, 0);
+    margin: 0;
+}
+
+#primordial {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(20, 20, 20);
+}
+
+#warn {
+    display: none;
+    color: white;
+    justify-content: center;
+    align-items: center;
+}
+
+#screen1 {
+    width: 100%;
+    height: 100vh;
+    background-color: #120000;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 1s;
+}
+
+#screen1 img {
+    width: 30%;
+    transition: 1s;
+}
+
+#btns1 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0px;
+}
+
+#Learn1 {
+    margin-left: 10%;
+}
+
+.btn1:hover {
+    cursor: pointer;
+    color: #120000;
+    background-color: rgb(255, 255, 255);
+    transition: 1s;
+    padding: 1%;
+    padding-right: 2%;
+    padding-left: 2%;
+}
+
+.btn1 {
+    background-color: transparent;
+    color: white;
+    border: none;
+    margin-left: 7%;
+    margin-right: 7%;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0px;
+}
+
+#tracin {
+    width: 2px;
+    height: 0px;
+    background-color: white;
+    margin-left: 2%;
+}
+

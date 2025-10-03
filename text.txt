@@ -1,0 +1,16 @@
+const ds = document.getElementById("display")
+
+for (i = 0; i < localStorage.length; i++) {
+    const kei = localStorage.key(i)
+    const valu = localStorage.getItem(`${kei}`)
+    const newText = document.createElement("h1")
+    newText.innerHTML = kei + ": " + valu
+    console.log(valu)
+    ds.appendChild(newText)
+}
+
+///// ^  CRIAR elementos em lista (posso usar para as imagens)
+
+let atual = parseInt(localStorage.getItem('imgs'), 10), localStorage.setItem('imgs', atual + 1)
+
+///// ^ adicionar ao valor de imagens

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADD</title>
+    <link rel="stylesheet" href="add.css">
+</head>
+<body>
+    <div id="primordial">
+        <div id="screen1">
+            <div id="up">
+                <img id="logo1" src="../../assets/logo.png" alt="LOGO">
+                <div id="tracin"></div>
+                <h1>Look</h1>
+            </div>
+            <div id="down">
+                <p>You need pictures to look at</p>
+                <div id="btns1">
+                    <button id="lib" class="btn1">Library</button>
+                    <p>or</p>
+                    <button id="upl" class="btn1">Upload</button>
+                </div>
+            </div>
+            <div id="backPop"></div>
+            <div id="pop1">
+                <button id="x1">x</button>
+            </div>
+            <div id="pop2">
+                <button id="x2"><img src="../../assets/xis.png" alt="x"></button>
+                <h1>Upload</h1>
+                <p>(It's just a temporary file, <br>if the size is greater than 5mb<br>the resolution will be compromised)</p>
+                <label id="upl2" for="upload" class="custom-file-upload">
+                Choose your file
+                </label>
+                <input type="file" id="upload" accept="image/*" style="display: none;"/>
+            </div>
+        </div>
+    </div>
+    <div id="warn">
+        <h1>Ajuste a tela</h1>
+    </div>
+    <script src="add.js"></script>
+</body>
+</html>
