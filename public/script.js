@@ -11,14 +11,14 @@ if (localStorage.getItem('imgs') === null) {
     localStorage.setItem('imgs', 0)
 }
 
-let ratio = window.innerWidth / window.innerHeight
+let ratio = screen.width / screen.height
 
 if (ratio <= 1) {
     primordial.style.display = "none"
     warn.style.display = "flex"
     console.log("ratio <= 1")
 } else {
-    primordial.style.height = `${window.innerHeight}px`
+    primordial.style.height = `${screen.height}px`
 }
 
 function checkRatio() {
@@ -30,7 +30,7 @@ function checkRatio() {
     } else {
         primordial.style.display = "flex"
         warn.style.display = "none"
-        primordial.style.height = `${window.innerHeight}px`
+        primordial.style.height = `${screen.height}px`
         console.log("checado, primordial")
     }
 }
