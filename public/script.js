@@ -10,15 +10,15 @@ const warn = document.getElementById("warn")
 if (localStorage.getItem('imgs') === null) {
     localStorage.setItem('imgs', 0)
 }
-
-let ratio = screen.width / screen.height
+/*
+let ratio = window.innerWidth / window.innerHeight
 
 if (ratio <= 1) {
     primordial.style.display = "none"
     warn.style.display = "flex"
     console.log("ratio <= 1")
 } else {
-    primordial.style.height = `${screen.height}px`
+    primordial.style.height = `${window.innerHeight}px`
 }
 
 function checkRatio() {
@@ -30,7 +30,7 @@ function checkRatio() {
     } else {
         primordial.style.display = "flex"
         warn.style.display = "none"
-        primordial.style.height = `${screen.height}px`
+        primordial.style.height = `${window.innerHeight}px`
         console.log("checado, primordial")
     }
 }
@@ -38,7 +38,7 @@ function checkRatio() {
 window.addEventListener("load", checkRatio)
 window.addEventListener("resize", checkRatio)
 window.addEventListener('orientationchange', checkRatio)
-
+*/
 setTimeout(function() {
     logo1.style.width = '20%'
     btns1.style.marginTop = '100px'
