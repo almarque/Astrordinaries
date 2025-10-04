@@ -46,10 +46,11 @@ body {
 }
 
 canvas {
-    border: 2px solid #444;
+    border: none;
     margin-top: 15px;
     cursor: crosshair;
     max-width: 100%;
+    display: none;
 }
 
 button, input[type="file"] {
@@ -77,7 +78,7 @@ button, input[type="file"] {
     background-color: #0e0202;
     border-radius: 100px;
     border: white solid 2px;
-    height: 80%;
+    height: 80px;
     margin-top: 10px;
     margin-left: 7%;
 }
@@ -85,10 +86,12 @@ button, input[type="file"] {
 #header {
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 100%;
     padding-top: 2%;
     padding-bottom: 2%;
     background-color: rgb(37, 0, 0);
+    height: 100%;
 }
 
 #zoomRange {

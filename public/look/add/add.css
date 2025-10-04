@@ -171,8 +171,9 @@ body {
     rotate: 90deg;
 }
 
-#upl2 {
+#gla {
     background-color: #704040;
+    margin-top: 20px;
     color: white;
     border: none;
     font-size: 2em;
@@ -180,7 +181,7 @@ body {
     padding-left: 8%;
     padding-right: 8%;
 }
-#upl2:hover {
+#gla:hover {
     cursor: pointer;
     background-color: rgba(156, 92, 92, 0.089);
     color: rgba(255, 255, 255, 0.151);

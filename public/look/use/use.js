@@ -10,6 +10,8 @@ const zoomSlider = document.getElementById('zoomRange');
 const zoomInBtn = document.getElementById('zoomIn');
 const zoomOutBtn = document.getElementById('zoomOut');
 const zoomValue = document.getElementById('zoomValue');
+const MIN_IMG_WIDTH = 1000;
+const MIN_IMG_HEIGHT = 1000;
 
 let image = new Image();
 let zoom = 1;
@@ -64,29 +66,59 @@ btnReset.addEventListener('click', () => {
 inputUpload.addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (!file) return;
+
   const reader = new FileReader();
   reader.onload = function (event) {
     image.onload = () => {
-      imageId = file.name;
-      zoom = 1;
-      zoomCenter = null;
-      scale = 1;
-      loadAnnotations();
+      console.log("Imagem carregada:", image.width, "x", image.height);
+
+      if (image.width < MIN_IMG_WIDTH || image.height < MIN_IMG_HEIGHT) {
+        console.log("⚠️ Imagem muito pequena. Mostrando aviso...");
+
+        canvas.width = 600;
+        canvas.height = 200;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "white";
+        ctx.font = "20px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("Imagem muito pequena.", canvas.width / 2, 80);
+        ctx.fillText("Envie outra imagem.", canvas.width / 2, 120);
+
+        return;
+      }
 
       const imgW = image.width;
       const imgH = image.height;
-      const maxW = window.innerWidth * 0.7;
+      const maxW = window.innerWidth * 0.9;
       const maxH = window.innerHeight * 0.7;
 
+      imageId = file.name;
+      zoom = 1;
+      zoomCenter = null;
       scale = Math.min(maxW / imgW, maxH / imgH, 1);
       canvas.width = imgW * scale;
       canvas.height = imgH * scale;
 
+      localStorage.setItem("uploadedImage", event.target.result);
+      loadAnnotations();
       draw();
     };
+
     image.src = event.target.result;
   };
+
   reader.readAsDataURL(file);
+  document.getElementById("header").style.height = "15%"
+  document.getElementById("header").style.transition = "1s"
+  setTimeout(() => {
+    canvas.style.border = "2px solid #ffffff"
+    canvas.style.display = "block"
+  }, 1000);
 });
 
 function loadApodImage() {
@@ -333,34 +365,6 @@ function animate() {
 }
 
 animate();
-
-const uploaded = localStorage.getItem("uploadedImage");
-
-if (uploaded) {
-  image.onload = () => {
-    imageId = "uploaded"; 
-    titulo.textContent = "Imagem carregada";
-    explicacao.textContent = "";
-    zoom = 1;
-    zoomCenter = null;
-    scale = 1;
-    loadAnnotations();
-
-    const imgW = image.width;
-    const imgH = image.height;
-    const maxW = window.innerWidth * 0.9;
-    const maxH = window.innerHeight * 0.7;
-
-    scale = Math.min(maxW / imgW, maxH / imgH, 1);
-    canvas.width = imgW * scale;
-    canvas.height = imgH * scale;
-
-    draw();
-    localStorage.removeItem("uploadedImage");
-  };
-
-  image.src = uploaded;
-}
 
 zoomSlider.addEventListener("input", function () {
   const val = (this.value - this.min) / (this.max - this.min) * 100;

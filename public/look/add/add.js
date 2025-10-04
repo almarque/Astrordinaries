@@ -13,7 +13,7 @@ const pop2 = document.getElementById("pop2")
 const backPop = document.getElementById("backPop")
 const lib  = document.getElementById("lib")
 const upl = document.getElementById("upl")
-const input = document.getElementById("upload");
+const gla = document.getElementById("gla")
 
 if (localStorage.getItem('imgs') === null) {
     localStorage.setItem('imgs', 0)
@@ -81,38 +81,6 @@ upl.addEventListener("click", () => {
     }, 100);
 })
 
-  input.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-
-  reader.onload = function (event) {
-    const img = new Image();
-    img.onload = function () {
-      // Redimensionar para largura máxima de 1000px
-      const maxWidth = 1000;
-      const scale = Math.min(maxWidth / img.width, 1);
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
-
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-      const resizedBase64 = canvas.toDataURL("image/jpeg", 0.85); // qualidade 85%
-
-      // Salvar no localStorage
-      try {
-        localStorage.setItem("uploadedImage", resizedBase64);
-        window.location.href = "../use/use.html";
-      } catch (err) {
-        alert("Imagem muito grande. Tente uma menor.");
-      }
-    };
-
-    img.src = event.target.result;
-  };
-
-  reader.readAsDataURL(file);
-});
+gla.addEventListener("click", () => {
+    window.location.href = "../use/use.html"
+})
