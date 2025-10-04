@@ -36,7 +36,7 @@ btnAnotar.addEventListener('click', () => {
   } else {
     isDrawing = true;
     isErasing = false;
-    btnAnotar.style.width = '90px'
+    btnAnotar.style.width = '80px'
     btnBorracha.style.width = '70px';
   }
   canvas.style.cursor = isDrawing ? 'pointer' : 'crosshair';
@@ -49,7 +49,7 @@ btnBorracha.addEventListener('click', () => {
   } else {
     isErasing = true;
     isDrawing = false;
-    btnBorracha.style.width = '90px';
+    btnBorracha.style.width = '80px';
     btnAnotar.style.width = '70px';
   }
 });
@@ -292,7 +292,7 @@ function draw() {
   ctx.translate(dx, dy);
   ctx.rotate(rotationAngle);
 
-  ctx.strokeStyle = 'red';
+  ctx.strokeStyle = 'white';
   ctx.lineWidth = 4;
   ctx.beginPath();
   ctx.moveTo(-6, -6);
@@ -301,7 +301,7 @@ function draw() {
   ctx.lineTo(6, -6);
   ctx.stroke();
 
-  ctx.strokeStyle = 'red';
+  ctx.strokeStyle = 'black';
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(-6, -6);
