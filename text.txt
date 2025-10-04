@@ -1,3 +1,0 @@
-let atual = parseInt(localStorage.getItem('imgs'), 10), localStorage.setItem('imgs', atual + 1)
-
-///// ^ adicionar ao valor de imagens

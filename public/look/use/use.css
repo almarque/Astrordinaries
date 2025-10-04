@@ -43,6 +43,7 @@ label:hover {
 body {
     background-color: rgb(0, 0, 0);
     margin: 0;
+    overflow: hidden;
 }
 
 canvas {
@@ -85,7 +86,22 @@ button, input[type="file"] {
 #popbtns {
     padding-top: 10px;
     display: none;
+    align-items: center;
     position: absolute;
+    user-select: none;
+    cursor: move;
+    transition: 0s;
+    background-color: #6b2323;
+    border-radius: 20px;
+    top: 50%;
+}
+#poptarget {
+    padding-top: 10px;
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    right: 0px;
+    top: 24%;
     user-select: none;
     cursor: move;
     transition: 0s;
@@ -102,7 +118,7 @@ button, input[type="file"] {
 }
 
 #butns {
-    display: flex;
+    display: none;
     justify-content: space-around;
     align-items: center;
     background-color: #0e0202;
@@ -110,7 +126,7 @@ button, input[type="file"] {
     border: white solid 2px;
     height: 80px;
     margin-top: 10px;
-    margin-left: 7%;
+    margin-left: 1.5%;
 }
 
 #header {
@@ -129,6 +145,10 @@ button, input[type="file"] {
     height: 20px;
     background: linear-gradient(to right, #d42f2f 0%, #361616 0%);
     border-radius: 0;
+}
+
+a {
+    color: #d42f2f;
 }
     
 input[type=range] {
@@ -202,7 +222,7 @@ input[type=range]::-moz-range-track {
 }
 
 #control {
-    display: flex;
+    display: none;
     justify-content: space-between;
     align-items: center;
     border: solid 2px #743b3b;
@@ -219,4 +239,37 @@ input[type=range]::-moz-range-track {
 }
 .MM:hover {
     color: rgb(82, 37, 37);
+}
+
+#regua {
+    filter: invert(1);
+}
+
+#text {
+    filter: invert(1);
+}
+
+#textInput {
+  position: absolute;
+  display: none;
+  z-index: 10;
+  font-size: 16px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  color: black;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+#btnExport {
+    filter: invert(1);
+}
+
+#btnTarget {
+filter: invert(1);
+}
+
+#btnLayers {
+filter: invert(1);
 }

@@ -50,9 +50,16 @@ let bholeImg = new Image()
 bholeImg.src = '../../assets/bhole.png'
 let nebulaImg = new Image()
 nebulaImg.src = '../../assets/nebula.png'
+let isMeasuring = false;
+let measureStart = null;
+let measureEnd = null;
+let measurePreviewEnd = null;
+let isTyping = false;
+let textos = [];
 
 btnEplanet.addEventListener('click', () => {
   isStamping = !isStamping;
+  isMeasuring = false
   isDrawing = false;
   isErasing = false;
   stampTypeAtual = isStamping ? "eplanet" : null;
@@ -64,10 +71,12 @@ btnEplanet.addEventListener('click', () => {
   btnCarimbo.style.width = '70px'
   btnAnotar.style.width = '70px';
   btnBorracha.style.width = '70px';
+  btnMeasure.style.width = '70px'
 });
 
 btnStar.addEventListener('click', () => {
   isStamping = !isStamping;
+  isMeasuring = false
   isDrawing = false;
   isErasing = false;
   stampTypeAtual = isStamping ? "star" : null;
@@ -79,10 +88,12 @@ btnStar.addEventListener('click', () => {
   btnCarimbo.style.width = '70px'
   btnAnotar.style.width = '70px';
   btnBorracha.style.width = '70px';
+  btnMeasure.style.width = '70px'
 });
 
 btnNebula.addEventListener('click', () => {
   isStamping = !isStamping;
+  isMeasuring = false
   isDrawing = false;
   isErasing = false;
   stampTypeAtual = isStamping ? "nebula" : null;
@@ -94,10 +105,12 @@ btnNebula.addEventListener('click', () => {
   btnCarimbo.style.width = '70px'
   btnAnotar.style.width = '70px';
   btnBorracha.style.width = '70px';
+  btnMeasure.style.width = '70px'
 });
 
 btnBhole.addEventListener('click', () => {
   isStamping = !isStamping;
+  isMeasuring = false
   isDrawing = false;
   isErasing = false;
   stampTypeAtual = isStamping ? "bhole" : null;
@@ -111,10 +124,12 @@ btnBhole.addEventListener('click', () => {
   btnCarimbo.style.width = '70px'
   btnAnotar.style.width = '70px';
   btnBorracha.style.width = '70px';
+  btnMeasure.style.width = '70px'
 });
 
 btnCarimbo.addEventListener('click', () => {
   isStamping = !isStamping;
+  isMeasuring = false
   isDrawing = false;
   isErasing = false;
   stampTypeAtual = isStamping ? "galaxy" : null;
@@ -126,6 +141,7 @@ btnCarimbo.addEventListener('click', () => {
   btnNebula.style.width = '70px'
   btnAnotar.style.width = '70px';
   btnBorracha.style.width = '70px';
+  btnMeasure.style.width = '70px'
 });
 
 btnAnotar.addEventListener('click', () => {
@@ -135,6 +151,7 @@ btnAnotar.addEventListener('click', () => {
   } else {
     isDrawing = true;
     isErasing = false;
+    isMeasuring = false
     btnAnotar.style.width = '80px'
     btnBorracha.style.width = '70px';
   }
@@ -148,6 +165,7 @@ btnBorracha.addEventListener('click', () => {
   } else {
     isErasing = true;
     isDrawing = false;
+    isMeasuring = false
     btnBorracha.style.width = '80px';
     btnAnotar.style.width = '70px';
   }
@@ -215,6 +233,8 @@ inputUpload.addEventListener('change', (e) => {
   setTimeout(() => {
     canvas.style.border = "2px solid #ffffff"
     canvas.style.display = "block"
+    document.getElementById("butns").style.display = 'flex'
+    document.getElementById("control").style.display = "flex"
   }, 1000);
 });
 
@@ -232,16 +252,30 @@ canvas.addEventListener('mousedown', (e) => {
 });
 
 canvas.addEventListener('mousemove', (e) => {
+  if (!image.src) return;
+
   mousePos = getImageCoordinates(e);
 
   if (isDrawing && drawing) {
     const { x, y } = mousePos;
     currentLine.push({ x, y });
     draw();
-  } else if (isErasing) {
+    return;
+  }
+
+  if (isErasing) {
     const { x, y } = mousePos;
     eraseAt(x, y);
     draw();
+    return;
+  }
+
+  if (isMeasuring && measureStart && !measureEnd) {
+  measurePreviewEnd = getImageCoordinates(e);
+}
+
+  if (isStamping || isTyping) {
+    return;
   }
 });
 
@@ -285,10 +319,52 @@ canvas.addEventListener('click', (e) => {
     }
 
     draw();
+  } else if (isTyping) {
+  const rect = canvas.getBoundingClientRect();
+  const dx = ((x - cropX) / cropW) * canvas.width;
+  const dy = ((y - cropY) / cropH) * canvas.height;
+
+  const input = document.getElementById("textInput");
+
+  input.style.left = `${rect.left + dx}px`;
+  input.style.top = `${rect.top + dy}px`;
+  input.style.display = "block";
+  input.value = "";
+  input.focus();
+
+  input.onkeydown = function (ev) {
+    if (ev.key === "Enter") {
+      const conteudo = input.value.trim();
+      if (conteudo) {
+        textos.push({ x, y, conteudo });
+        saveTextos();
+        draw();
+      }
+      input.style.display = "none";
+    } else if (ev.key === "Escape") {
+      input.style.display = "none";
+    }
+  };
+} else if (isMeasuring) {
+  if (!measureStart) {
+    measureStart = { x, y };
+    measureEnd = null;
+    measurePreviewEnd = null;
+    draw()
+  } else if (!measureEnd) {
+    measureEnd = { x, y };
+    measurePreviewEnd = null; 
+    draw()
   } else {
-    zoomCenter = { x, y };
-    draw();
+    measureStart = { x, y };
+    measureEnd = null;
+    measurePreviewEnd = null;
+    draw()
   }
+} else {
+  zoomCenter = { x, y };
+    draw();
+}
 });
 
 zoomInBtn.addEventListener('click', () => {
@@ -304,7 +380,12 @@ zoomOutBtn.addEventListener('click', () => {
 });
 
 zoomSlider.addEventListener('input', () => {
-  zoom = parseFloat(zoomSlider.value);
+  const t = parseFloat(zoomSlider.value); 
+  const normalized = t / 100; 
+
+  const curved = Math.pow(normalized, 2); 
+  zoom = zoomMin + (zoomMax - zoomMin) * curved;
+
   draw();
 });
 
@@ -417,7 +498,7 @@ function loadBCarimbos() {
   }
 }
 
-function draw() {
+function draw(previewEnd = null) {
   if (!image) return;
 
   const iw = image.width;
@@ -467,11 +548,19 @@ function draw() {
     ctx.stroke();
   }
 
-  if (zoomCenter && !isDrawing && !isErasing) {
+  if (zoomCenter && !isDrawing && !isErasing && !isMeasuring && !isStamping) {
+
   const dx = ((zoomCenter.x - cropX) / cropW) * canvas.width;
   const dy = ((zoomCenter.y - cropY) / cropH) * canvas.height;
 
   ctx.save();
+
+  ctx.fillStyle = "white"; // cor do texto
+    ctx.font = "14px Iceland"; // fonte e tamanho
+    ctx.textAlign = "left"; // alinhamento à esquerda
+    ctx.textBaseline = "top"; // alinhamento ao topo
+    ctx.fillText(`x: ${zoomCenter.x.toFixed(1)}, y: ${zoomCenter.y.toFixed(1)}`, 10, 10);
+
   ctx.translate(dx, dy);
   ctx.rotate(rotationAngle);
 
@@ -576,8 +665,43 @@ bcarimbos.forEach(c => {
   ctx.restore();
 });
 
-}
+if (isMeasuring && measureStart && (measureEnd || measurePreviewEnd)) {
+  const end = measureEnd || measurePreviewEnd;
 
+    const x1 = ((measureStart.x - cropX) / cropW) * canvas.width;
+    const y1 = ((measureStart.y - cropY) / cropH) * canvas.height;
+    const x2 = ((end.x - cropX) / cropW) * canvas.width;
+    const y2 = ((end.y - cropY) / cropH) * canvas.height;
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = "#d42f2f";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    const dx = end.x - measureStart.x;
+    const dy = end.y - measureStart.y;
+    const dist = Math.sqrt(dx * dx + dy * dy).toFixed(1); 
+
+    const midX = (x1 + x2) / 2;
+    const midY = (y1 + y2) / 2;
+    ctx.fillStyle = "white";
+    ctx.font = "14px Iceland";
+    ctx.fillText(`${dist}px`, midX + 5, midY - 5);
+  }
+
+  textos.forEach(t => {
+  const dx = ((t.x - cropX) / cropW) * canvas.width;
+  const dy = ((t.y - cropY) / cropH) * canvas.height;
+
+  ctx.fillStyle = "white";
+  ctx.font = "16px Iceland";
+  ctx.fillText(t.conteudo, dx, dy);
+});
+
+
+} // fim do draw
 
 function animate() {
   rotationAngle += 0.05; 
@@ -646,5 +770,77 @@ ddd.addEventListener("click", () => {
     guia.style.display = "flex"
   } else {
     guia.style.display = "none"
+  }
+})
+
+const btnMeasure = document.getElementById("regua");
+
+btnMeasure.addEventListener("click", () => {
+  isMeasuring = !isMeasuring;
+  isDrawing = false;
+  isErasing = false;
+  isStamping = false;
+  btnMeasure.style.width = isMeasuring ? '80px' : '70px';
+});
+
+const btnTexto = document.getElementById("text");
+
+btnTexto.addEventListener("click", () => {
+  isTyping = !isTyping;
+  isDrawing = false;
+  isErasing = false;
+  isStamping = false;
+  isMeasuring = false;
+
+  btnTexto.style.width = isTyping ? '80px' : '70px';
+});
+
+function saveTextos() {
+  localStorage.setItem("textos_" + imageId, JSON.stringify(textos));
+}
+
+function loadTextos() {
+  const data = localStorage.getItem("textos_" + imageId);
+  try {
+    textos = JSON.parse(data) || [];
+  } catch {
+    textos = [];
+  }
+}
+
+const btnExport = document.getElementById("btnExport");
+
+btnExport.addEventListener("click", () => {
+  const exportCanvas = document.createElement("canvas");
+  exportCanvas.width = image.width; 
+  exportCanvas.height = image.height;
+  const exportCtx = exportCanvas.getContext("2d");
+
+  exportCtx.drawImage(image, 0, 0);
+
+  carimbos.forEach(c => exportCtx.drawImage(galaxyImg, c.x - 10, c.y - 10, 20, 20));
+  ecarimbos.forEach(c => exportCtx.drawImage(eplanetImg, c.x - 10, c.y - 10, 20, 20));
+  scarimbos.forEach(c => exportCtx.drawImage(starImg, c.x - 10, c.y - 10, 20, 20));
+  ncarimbos.forEach(c => exportCtx.drawImage(nebulaImg, c.x - 10, c.y - 10, 20, 20));
+  bcarimbos.forEach(c => exportCtx.drawImage(bholeImg, c.x - 10, c.y - 10, 20, 20));
+  textos.forEach(t => {
+    exportCtx.fillStyle = "white";
+    exportCtx.font = "20px sans-serif";
+    exportCtx.fillText(t.conteudo, t.x, t.y);
+  });
+
+  const dataURL = exportCanvas.toDataURL("image/png"); 
+  const link = document.createElement("a");
+  link.download = "imagem-editada.png";
+  link.href = dataURL;
+  link.click();
+});
+
+document.getElementById("btnTarget").addEventListener("click", () => {
+  const popT = document.getElementById("poptarget")
+  if (popT.style.display === "flex") {
+    popT.style.display = "none"
+  } else {
+    popT.style.display = "flex"
   }
 })
