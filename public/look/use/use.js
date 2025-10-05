@@ -65,6 +65,7 @@ btnEplanet.addEventListener('click', () => {
   isMeasuring = false
   isDrawing = false;
   isErasing = false;
+  isTyping = false
   stampTypeAtual = isStamping ? "eplanet" : null;
 
   btnEplanet.style.width = isStamping ? '80px' : '70px';
@@ -75,6 +76,7 @@ btnEplanet.addEventListener('click', () => {
   btnAnotar.style.width = '70px';
   btnBorracha.style.width = '70px';
   btnMeasure.style.width = '70px'
+  btnTexto.style.width = '70px'
 });
 
 btnStar.addEventListener('click', () => {
@@ -82,6 +84,7 @@ btnStar.addEventListener('click', () => {
   isMeasuring = false
   isDrawing = false;
   isErasing = false;
+  isTyping = false
   stampTypeAtual = isStamping ? "star" : null;
 
   btnEplanet.style.width = '70px'
@@ -92,6 +95,7 @@ btnStar.addEventListener('click', () => {
   btnAnotar.style.width = '70px';
   btnBorracha.style.width = '70px';
   btnMeasure.style.width = '70px'
+  btnTexto.style.width = '70px'
 });
 
 btnNebula.addEventListener('click', () => {
@@ -109,6 +113,9 @@ btnNebula.addEventListener('click', () => {
   btnAnotar.style.width = '70px';
   btnBorracha.style.width = '70px';
   btnMeasure.style.width = '70px'
+
+  isTyping = false
+  btnTexto.style.width = '70px'
 });
 
 btnBhole.addEventListener('click', () => {
@@ -128,6 +135,9 @@ btnBhole.addEventListener('click', () => {
   btnAnotar.style.width = '70px';
   btnBorracha.style.width = '70px';
   btnMeasure.style.width = '70px'
+
+  isTyping = false
+  btnTexto.style.width = '70px'
 });
 
 btnCarimbo.addEventListener('click', () => {
@@ -145,6 +155,9 @@ btnCarimbo.addEventListener('click', () => {
   btnAnotar.style.width = '70px';
   btnBorracha.style.width = '70px';
   btnMeasure.style.width = '70px'
+
+  isTyping = false
+  btnTexto.style.width = '70px'
 });
 
 btnAnotar.addEventListener('click', () => {
@@ -155,8 +168,17 @@ btnAnotar.addEventListener('click', () => {
     isDrawing = true;
     isErasing = false;
     isMeasuring = false
+    isStamping = false
+    btnCarimbo.style.width = '70px';
     btnAnotar.style.width = '80px'
     btnBorracha.style.width = '70px';
+    btnEplanet.style.width = '70px'
+  btnStar.style.width = '70px'
+  btnBhole.style.width = '70px'
+  btnNebula.style.width = '70px'
+  btnMeasure.style.width = '70px'
+  isTyping = false
+  btnTexto.style.width = '70px'
   }
   canvas.style.cursor = isDrawing ? 'pointer' : 'crosshair';
 });
@@ -169,8 +191,17 @@ btnBorracha.addEventListener('click', () => {
     isErasing = true;
     isDrawing = false;
     isMeasuring = false
+    isTyping = false
+    isStamping = false
     btnBorracha.style.width = '80px';
     btnAnotar.style.width = '70px';
+    btnEplanet.style.width = '70px';
+  btnStar.style.width = '70px'
+  btnBhole.style.width = '70px'
+  btnNebula.style.width = '70px'
+  btnCarimbo.style.width = '70px'
+  btnMeasure.style.width = '70px'
+  btnTexto.style.width = '70px'
   }
 });
 
@@ -833,7 +864,16 @@ btnMeasure.addEventListener("click", () => {
   isDrawing = false;
   isErasing = false;
   isStamping = false;
+  isTyping = false
   btnMeasure.style.width = isMeasuring ? '80px' : '70px';
+  btnBorracha.style.width = '70px';
+    btnAnotar.style.width = '70px';
+    btnEplanet.style.width = '70px';
+  btnStar.style.width = '70px'
+  btnBhole.style.width = '70px'
+  btnNebula.style.width = '70px'
+  btnCarimbo.style.width = '70px'
+  btnTexto.style.width = '70px'
 });
 
 const btnTexto = document.getElementById("text");
@@ -846,6 +886,14 @@ btnTexto.addEventListener("click", () => {
   isMeasuring = false;
 
   btnTexto.style.width = isTyping ? '80px' : '70px';
+  btnMeasure.style.width = '70px';
+  btnBorracha.style.width = '70px';
+    btnAnotar.style.width = '70px';
+    btnEplanet.style.width = '70px';
+  btnStar.style.width = '70px'
+  btnBhole.style.width = '70px'
+  btnNebula.style.width = '70px'
+  btnCarimbo.style.width = '70px'
 });
 
 function saveTextos() {

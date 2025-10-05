@@ -26,12 +26,10 @@ function checkRatio() {
     if (ratio <= 1) {
         primordial.style.display = "none"
         warn.style.display = "flex"
-        console.log("checado, warn")
     } else {
         primordial.style.display = "flex"
         warn.style.display = "none"
         primordial.style.height = `${window.innerHeight}px`
-        console.log("checado, primordial")
     }
 }
 
@@ -52,8 +50,6 @@ look1.addEventListener("click", function() {
     if (imgsValue === 0) {
         window.location.href = "./look/add/add.html"
     } else {
-        window.location.href = "./look/use/use.html"
+        window.location.href = "./look/look.html"
     }
 })
-
-console.log(localStorage)

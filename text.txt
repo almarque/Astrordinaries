@@ -5,12 +5,9 @@ LEARN: {
 }
 
 LOOK: {
-    UPLOAD: {
-        - ao clicar num botao, desselecionar todos os outros que interferem (draw, eraser, measure, text, targets)
-    }
     LIB: {
-        - lib json's (is it possible to take all the images from jwst and hubble?)
-        - Select the libs
+        - lib json's (hubble entire method and jwst json method)
+        - put the link of galleries to the users can search and download
         - look page
         - The entire use lib page
     }

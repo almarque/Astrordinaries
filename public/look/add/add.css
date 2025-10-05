@@ -105,31 +105,12 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.74);
     opacity: 0;
     display: none;
 }
 
-#pop1 {
-    width: 60%;
-    height: 60%;
-    position: absolute;
-    background-color: #380E0E;
-    border-radius: 20px;
-    opacity: 0;
-    display: none;
-}
-
-#x1 {
-    background-color: transparent;
-    color: white;
-    border: none;
-    font-size: 3em;
-    position: absolute;
-    right: 2%;
-}
-
-#pop2 {
+#pop2, #pop1 {
     width: 40%;
     height: 60%;
     position: absolute;
@@ -154,24 +135,24 @@ body {
     text-align: center;
 }
 
-#x2 {
+#x2, #x1 {
     background-color: transparent;
     color: white;
     border: none;
-    width: 7%;
+    width: 40px;
     position: absolute;
     right: 5%;
     top: 7%;
 }
-#x2 img {
+#x2 img, #x1 img {
     width: 100%;
 }
-#x2:hover {
+#x2:hover, #x1:hover {
     cursor: pointer;
     rotate: 90deg;
 }
 
-#gla {
+#gla, #gla2 {
     background-color: #704040;
     margin-top: 20px;
     color: white;
@@ -181,9 +162,26 @@ body {
     padding-left: 8%;
     padding-right: 8%;
 }
-#gla:hover {
+#gla:hover, #gla2:hover {
     cursor: pointer;
     background-color: rgba(156, 92, 92, 0.089);
     color: rgba(255, 255, 255, 0.151);
     transition: 1s;
+}
+
+.lib-btn {
+  padding: 10px;
+  width: 60%;
+  margin: 5px;
+  background-color: #222;
+  color: white;
+  border: 1px solid white;
+  cursor: pointer;
+  font-size: 1.5em;
+}
+
+.lib-btn.active {
+  background-color: rgb(255, 255, 255);
+  color: black;
+  font-weight: bold;
 }
