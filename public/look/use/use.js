@@ -56,6 +56,7 @@ let measureEnd = null;
 let measurePreviewEnd = null;
 let isTyping = false;
 let textos = [];
+let layers = [];
 
 btnEplanet.addEventListener('click', () => {
   isStamping = !isStamping;
@@ -188,7 +189,7 @@ inputUpload.addEventListener('change', (e) => {
       console.log("Imagem carregada:", image.width, "x", image.height);
 
       if (image.width < MIN_IMG_WIDTH || image.height < MIN_IMG_HEIGHT) {
-        console.log("⚠️ Imagem muito pequena. Mostrando aviso...");
+        console.log("Imagem muito pequena.");
 
         canvas.width = 600;
         canvas.height = 200;
@@ -523,6 +524,15 @@ function draw(previewEnd = null) {
   ctx.clearRect(0, 0, cw, ch);
   ctx.drawImage(image, cropX, cropY, cropW, cropH, 0, 0, cw, ch);
 
+  layers.forEach(layer => {
+  if (!layer.visible) return;
+
+  ctx.save();
+  ctx.globalAlpha = layer.opacity; // aplica transparência
+  ctx.drawImage(layer.img, layer.x, layer.y);
+  ctx.restore();
+});
+
   ctx.strokeStyle = '#ffffffff';
   ctx.lineWidth = 2;
 
@@ -844,3 +854,57 @@ document.getElementById("btnTarget").addEventListener("click", () => {
     popT.style.display = "flex"
   }
 })
+
+const btnLayers = document.getElementById("btnLayers")
+
+btnLayers.addEventListener("click", () => {
+  function addLayer(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const layer = {
+        id: Date.now(),
+        img: img,
+        x: canvas.width / 2 - img.width / 2,
+        y: canvas.height / 2 - img.height / 2,
+        opacity: 1,
+        visible: true
+      };
+      layers.push(layer);
+      draw(); 
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+})
+
+function bringToFront(layerId) {
+  const index = layers.findIndex(l => l.id === layerId);
+  if (index > -1) {
+    const [layer] = layers.splice(index, 1);
+    layers.push(layer); 
+    draw();
+  }
+}
+
+function sendToBack(layerId) {
+  const index = layers.findIndex(l => l.id === layerId);
+  if (index > -1) {
+    const [layer] = layers.splice(index, 1);
+    layers.unshift(layer); 
+    draw();
+  }
+}
+
+function removeLayer(layerId) {
+  layers = layers.filter(l => l.id !== layerId);
+  draw();
+}
+
+function moveLayer(layer, newX, newY) {
+  layer.x = Math.max(0, Math.min(newX, canvas.width - layer.img.width));
+  layer.y = Math.max(0, Math.min(newY, canvas.height - layer.img.height));
+  draw();
+}

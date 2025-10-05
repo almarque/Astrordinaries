@@ -1,0 +1,26 @@
+LEARN: {
+    - identificar corpos celetes
+    - conteudos astronomicos
+    - desafios da ciencia (perguntas em aberto)
+}
+
+LOOK: {
+    UPLOAD: {
+        - file or paste URL
+        - layers
+        - ao clicar num botao, desselecionar todos os outros que interferem (draw, eraser, measure, text, targets)
+    }
+    LIB: {
+        - lib json's (is it possible to take all the images from jwst and hubble?)
+        - Select the libs
+        - look page
+        - The entire use lib page
+    }
+}
+
+NSAC: {
+    - canva slides
+    - links
+    - descriptions
+    - send project
+}
