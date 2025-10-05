@@ -57,6 +57,8 @@ let measurePreviewEnd = null;
 let isTyping = false;
 let textos = [];
 let layers = [];
+let layerCounter = 1;
+let er = false
 
 btnEplanet.addEventListener('click', () => {
   isStamping = !isStamping;
@@ -222,6 +224,12 @@ inputUpload.addEventListener('change', (e) => {
 
       localStorage.setItem("uploadedImage", event.target.result);
       loadAnnotations();
+      loadCarimbos()
+      loadBCarimbos()
+      loadECarimbos()
+      loadNCarimbos()
+      loadSCarimbos()
+      loadTextos()
       draw();
     };
 
@@ -249,6 +257,11 @@ canvas.addEventListener('mousedown', (e) => {
     drawing = true;
     const { x, y } = getImageCoordinates(e);
     currentLine = [{ x, y }];
+  } else if (isErasing) {
+    drawing = true; // vamos usar a mesma flag
+    const { x, y } = getImageCoordinates(e);
+    eraseAt(x, y);
+    draw();
   }
 });
 
@@ -262,13 +275,10 @@ canvas.addEventListener('mousemove', (e) => {
     currentLine.push({ x, y });
     draw();
     return;
-  }
-
-  if (isErasing) {
+  } else if (isErasing && drawing) {
     const { x, y } = mousePos;
     eraseAt(x, y);
     draw();
-    return;
   }
 
   if (isMeasuring && measureStart && !measureEnd) {
@@ -291,9 +301,16 @@ canvas.addEventListener('mouseup', () => {
 });
 
 canvas.addEventListener('click', (e) => {
-  if (!image.src || isDrawing || isErasing) return;
+  if (!image.src || isDrawing) return
+  console.log(isErasing)
 
   const { x, y } = getImageCoordinates(e);
+
+  if (isErasing) {
+    eraseAt(x, y); 
+    draw();
+    return;
+  }
 
   if (isStamping) {
     switch (stampTypeAtual) {
@@ -405,7 +422,8 @@ function getImageCoordinates(e) {
 }
 
 function eraseAt(x, y) {
-  const radius = 10 / zoom;
+  const radius = 20 / zoom; 
+
   annotations = annotations.filter(line => {
     return !line.some(p => {
       const dx = p.x - x;
@@ -413,7 +431,26 @@ function eraseAt(x, y) {
       return Math.sqrt(dx * dx + dy * dy) < radius;
     });
   });
+
+  textos = textos.filter(t => {
+    const dx = t.x - x;
+    const dy = t.y - y;
+    return Math.sqrt(dx*dx + dy*dy) > radius;
+  });
+
+  carimbos = carimbos.filter(c => Math.sqrt((c.x - x)**2 + (c.y - y)**2) > radius);
+  ecarimbos = ecarimbos.filter(c => Math.sqrt((c.x - x)**2 + (c.y - y)**2) > radius);
+  scarimbos = scarimbos.filter(c => Math.sqrt((c.x - x)**2 + (c.y - y)**2) > radius);
+  ncarimbos = ncarimbos.filter(c => Math.sqrt((c.x - x)**2 + (c.y - y)**2) > radius);
+  bcarimbos = bcarimbos.filter(c => Math.sqrt((c.x - x)**2 + (c.y - y)**2) > radius);
+
   saveAnnotations();
+  saveTextos();
+  saveCarimbos();
+  saveECarimbos();
+  saveSCarimbos();
+  saveNCarimbos();
+  saveBCarimbos();
 }
 
 function saveAnnotations() {
@@ -527,9 +564,15 @@ function draw(previewEnd = null) {
   layers.forEach(layer => {
   if (!layer.visible) return;
 
+  const dx = ((layer.x - cropX) / cropW) * canvas.width;
+  const dy = ((layer.y - cropY) / cropH) * canvas.height;
+
+  const scaledW = (layer.img.width / cropW) * canvas.width;
+  const scaledH = (layer.img.height / cropH) * canvas.height;
+
   ctx.save();
-  ctx.globalAlpha = layer.opacity; // aplica transparência
-  ctx.drawImage(layer.img, layer.x, layer.y);
+  ctx.globalAlpha = layer.opacity;
+  ctx.drawImage(layer.img, dx, dy, scaledW, scaledH);
   ctx.restore();
 });
 
@@ -565,10 +608,10 @@ function draw(previewEnd = null) {
 
   ctx.save();
 
-  ctx.fillStyle = "white"; // cor do texto
-    ctx.font = "14px Iceland"; // fonte e tamanho
-    ctx.textAlign = "left"; // alinhamento à esquerda
-    ctx.textBaseline = "top"; // alinhamento ao topo
+  ctx.fillStyle = "white"; 
+    ctx.font = "14px Iceland"; 
+    ctx.textAlign = "left"; 
+    ctx.textBaseline = "top"; 
     ctx.fillText(`x: ${zoomCenter.x.toFixed(1)}, y: ${zoomCenter.y.toFixed(1)}`, 10, 10);
 
   ctx.translate(dx, dy);
@@ -855,37 +898,13 @@ document.getElementById("btnTarget").addEventListener("click", () => {
   }
 })
 
-const btnLayers = document.getElementById("btnLayers")
-
-btnLayers.addEventListener("click", () => {
-  function addLayer(file) {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const img = new Image();
-    img.onload = () => {
-      const layer = {
-        id: Date.now(),
-        img: img,
-        x: canvas.width / 2 - img.width / 2,
-        y: canvas.height / 2 - img.height / 2,
-        opacity: 1,
-        visible: true
-      };
-      layers.push(layer);
-      draw(); 
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-})
-
 function bringToFront(layerId) {
   const index = layers.findIndex(l => l.id === layerId);
   if (index > -1) {
     const [layer] = layers.splice(index, 1);
     layers.push(layer); 
     draw();
+    updateLayersPanel()
   }
 }
 
@@ -895,16 +914,212 @@ function sendToBack(layerId) {
     const [layer] = layers.splice(index, 1);
     layers.unshift(layer); 
     draw();
+    updateLayersPanel()
   }
 }
 
 function removeLayer(layerId) {
   layers = layers.filter(l => l.id !== layerId);
   draw();
+  updateLayersPanel()
 }
 
 function moveLayer(layer, newX, newY) {
   layer.x = Math.max(0, Math.min(newX, canvas.width - layer.img.width));
   layer.y = Math.max(0, Math.min(newY, canvas.height - layer.img.height));
   draw();
+}
+
+document.getElementById("btnAddLayer").addEventListener("click", () => {
+  document.getElementById("layerUpload").click();
+});
+
+document.getElementById("layerUpload").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvasCenterX = cropX + cropW / 2;
+      const canvasCenterY = cropY + cropH / 2;
+
+      const layer = {
+        id: layerCounter,
+        name: `Layer ${layerCounter}`,
+        img: img,
+        x: canvasCenterX - img.width / 2,
+        y: canvasCenterY - img.height / 2,
+        opacity: 1,
+        visible: true
+      };
+
+      layerCounter++;
+      layers.push(layer);
+      draw(); 
+      updateLayersPanel()
+      console.log(layerCounter, layer.id)
+    };
+    img.src = event.target.result;
+  };
+
+  reader.readAsDataURL(file);
+});
+
+btnLayers.addEventListener("click", () => {
+  if (document.getElementById("layerControl").style.display === "flex") {
+    document.getElementById("layerControl").style.display = "none"
+  } else {
+    document.getElementById("layerControl").style.display = "flex"
+  }
+})
+
+function updateLayersPanel() {
+  const list = document.getElementById("layerPanel");
+  list.innerHTML = "";
+
+  layers.forEach((layer, index) => {
+    const div = document.createElement("div");
+    div.style.borderBottom = "1px solid #444";
+    div.style.padding = "6px 0";
+
+    const title = document.createElement("div");
+    title.textContent = `Layer ${layer.id}`;
+    title.style.fontSize = "14px";
+    title.style.marginBottom = '5px'
+    div.appendChild(title);
+
+    const opacityInput = document.createElement("input");
+    opacityInput.type = "range";
+    opacityInput.min = 0;
+    opacityInput.max = 1;
+    opacityInput.step = 0.01;
+    opacityInput.value = layer.opacity;
+    opacityInput.style.width = "100%";
+    updateSliderBackground(opacityInput)
+    opacityInput.addEventListener("input", () => {
+      layer.opacity = parseFloat(opacityInput.value);
+      updateSliderBackground(opacityInput); 
+      draw();
+    });
+    div.appendChild(opacityInput);
+    
+
+    const controls = document.createElement("div");
+    controls.style.marginTop = "4px";
+
+    const upBtn = document.createElement("button");
+    const upImg = document.createElement("img");
+upImg.src = "../../assets/seta.png"; 
+upImg.alt = "Up";
+upImg.width = 16;
+upImg.height = 16;
+upImg.style.filter = 'invert(1)'
+upBtn.appendChild(upImg);
+    upBtn.title = "Go up";
+    upBtn.onclick = () => {
+      if (index < layers.length - 1) {
+        [layers[index], layers[index + 1]] = [layers[index + 1], layers[index]];
+        updateLayersPanel();
+        draw();
+      }
+    };
+
+    const downBtn = document.createElement("button");
+   const downImg = document.createElement("img");
+downImg.src = "../../assets/seta.png"; 
+downImg.alt = "Down";
+downImg.width = 16;
+downImg.height = 16;
+downBtn.appendChild(downImg);
+downImg.style.rotate = "180deg"
+downImg.style.filter = 'invert(1)'
+    downBtn.title = "Go down";
+    downBtn.onclick = () => {
+      if (index > 0) {
+        [layers[index], layers[index - 1]] = [layers[index - 1], layers[index]];
+        updateLayersPanel();
+        draw();
+      }
+    };
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "❌";
+    delBtn.title = "Delete Layer";
+    delBtn.style.marginLeft = "8px";
+    delBtn.onclick = () => {
+      layers.splice(index, 1);
+      updateLayersPanel();
+      draw();
+    };
+
+    [upBtn, downBtn, delBtn].forEach(btn => {
+      btn.style.marginRight = "4px";
+      btn.style.cursor = "pointer";
+    });
+
+    controls.appendChild(upBtn);
+    controls.appendChild(downBtn);
+    controls.appendChild(delBtn);
+    div.appendChild(controls);
+
+    list.appendChild(div);
+  });
+}
+
+function updateSliderBackground(slider) {
+  const val = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+  slider.style.background = `linear-gradient(to right, #2f71d4ff ${val}%, #161f36ff ${val}%)`;
+  slider.classList.add('sliderr')
+  slider.classList.add("vermelho");
+}
+
+document.getElementById("upload2").addEventListener("change", () => {
+  console.log('test')
+  const url = document.getElementById("upload2").value.trim();
+  if (!url) return;
+
+  const img = new Image();
+  img.crossOrigin = "anonymous"; 
+
+  img.onload = () => {
+    image = img;
+
+    const imgW = img.width;
+    const imgH = img.height;
+    const maxW = window.innerWidth * 0.9;
+    const maxH = window.innerHeight * 0.7;
+    scale = Math.min(maxW / imgW, maxH / imgH, 1);
+    canvas.width = imgW * scale;
+    canvas.height = imgH * scale;
+
+    zoom = 1;
+    zoomCenter = null;
+    imageId = url;
+
+    localStorage.setItem("uploadedImage", url); 
+    loadAnnotations(); 
+    loadRest()
+    draw();
+  };
+  
+
+  img.onerror = () => {
+    er = true
+    console.log(er)
+    return
+  };
+  img.src = url;
+});
+
+function loadRest() {
+  document.getElementById("header").style.height = "15%"
+  document.getElementById("header").style.transition = "1s"
+  setTimeout(() => {
+    canvas.style.border = "2px solid #ffffff"
+    canvas.style.display = "block"
+    document.getElementById("butns").style.display = 'flex'
+    document.getElementById("control").style.display = "flex"
+  }, 1000);
 }

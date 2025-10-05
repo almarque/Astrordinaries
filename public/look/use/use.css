@@ -147,9 +147,10 @@ button, input[type="file"] {
     border-radius: 0;
 }
 
-a {
-    color: #d42f2f;
+input[type=range] {
+    background: linear-gradient(to right, #d42f2f 0%, #361616 0%);
 }
+
     
 input[type=range] {
     -webkit-appearance: none; 
@@ -272,4 +273,48 @@ filter: invert(1);
 
 #btnLayers {
 filter: invert(1);
+}
+
+#layerControl {
+  position: absolute;
+  top: 25%;
+  left: 10px;
+  width: 200px;
+  background: #222;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+#layerControl button {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+input[type=range].vermelho::-webkit-slider-thumb {
+  background: rgb(117, 175, 230);
+}
+
+#upload2 {
+    color: rgb(248, 93, 93);
+    background-color: #0e0202;
+    border: none;
+    padding: 5px;
+}
+
+#uploader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
