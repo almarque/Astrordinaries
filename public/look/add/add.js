@@ -90,37 +90,3 @@ document.getElementById("gla2").addEventListener("click", () => {
         window.location.href = "../look.html"
     }
 })
-
-const activeLibs = JSON.parse(localStorage.getItem('libs_active') || '[]');
-
-  // Pega todos os botões
-  const buttons = document.querySelectorAll('.lib-btn');
-
-  buttons.forEach(button => {
-    const lib = button.dataset.lib;
-
-    // Aplica estilo ativo se estiver salvo
-    if (activeLibs.includes(lib)) {
-      button.classList.add('active');
-
-    }
-
-    // Toggle no clique
-    button.addEventListener('click', () => {
-      const index = activeLibs.indexOf(lib);
-
-      if (index !== -1) {
-        activeLibs.splice(index, 1); // remove
-        button.classList.remove('active');
-        let current = parseInt(localStorage.getItem('imgs')) || 0;
-        localStorage.setItem('imgs', current - 1);
-      } else {
-        activeLibs.push(lib); // adiciona
-        button.classList.add('active');
-        let current = parseInt(localStorage.getItem('imgs')) || 0;
-        localStorage.setItem('imgs', current + 1);
-      }
-
-      localStorage.setItem('libs_active', JSON.stringify(activeLibs));
-    });
-  });
