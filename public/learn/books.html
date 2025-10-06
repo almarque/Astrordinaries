@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Books</title>
+    <link rel="icon" type="image/png" href="./assets/icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Iceland&display=swap');
+
+* {
+    font-family: "Iceland";
+    transition: 0.5s;
+    font-weight: 400;
+}
+  body {
+    font-family: Iceland;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: #0e0e0e;
+  }
+  .book-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  .book {
+  width: 150px;
+  text-align: center;
+  background: #363636;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  position: relative; /* importante para a tag ser relativa à div */
+}
+  .book:hover {
+    transform: scale(1.05);
+  }
+  .book img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  .tag {
+  position: absolute;
+  bottom: 10px;   /* distância do fundo da div */
+  left: 50%;      /* centraliza horizontalmente */
+  transform: translateX(-50%);
+  font-weight: bold;
+  color: #000000;
+  padding: 4px 6px;
+  background-color: #1b1b1b; /* exemplo, cada tag terá sua cor */
+  width: 92%;
+}
+
+#titel {
+    color: white;
+}
+#logo10 {
+    width: 100px;
+}
+
+
+  .Joining-Science { background-color: #007bff; } 
+  .Introduction { background-color: #28a745; }    
+  .Intermediate { background-color: #ffc107; } 
+  .Advanced { background-color: #dc3545; }         
+</style>
+</head>
+<body>
+<img id="logo10" src="/public/assets/logo.png" alt="">
+<h1 id="titel">Our books recommendation</h1>
+<div class="book-container" id="book-list"></div>
+
+<script>
+fetch('books.json')
+  .then(res => res.json())
+  .then(books => {
+    const container = document.getElementById('book-list');
+
+    books.forEach(book => {
+      const bookDiv = document.createElement('div');
+      bookDiv.classList.add('book');
+
+      // Substituir espaços por traço para a classe CSS
+      const tagClass = book.tag.replace(/\s+/g, '-');
+      bookDiv.innerHTML = `
+        <a href="${book.link}" target="_blank">
+          <img src="${book.img}" alt="${book.tag}">
+          <div class="tag ${tagClass}">${book.tag}</div>
+        </a>
+      `;
+      container.appendChild(bookDiv);
+    });
+  })
+  .catch(err => console.error("Erro ao carregar JSON:", err));
+</script>
+
+</body>
+</html>
